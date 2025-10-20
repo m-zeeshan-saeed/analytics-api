@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from .schemas import EventSchema, EventListSchema
+from .schemas import EventSchema, EventListSchema, Blog
 
 router = APIRouter()
 
@@ -19,7 +19,11 @@ def get_events(event_id:int) -> EventSchema :
 
 
 @router.get("/")
-def read_events()-> EventListSchema:
+def read_products()-> EventListSchema:
     return{
         "results":[{"id":1},{"id":2},{"id":3},{"id":4}]
     }
+
+@router.post("/blog")
+async def create_blog(blog: Blog ):
+    return {'data': f"Blog is created with title as {blog.title}"}
