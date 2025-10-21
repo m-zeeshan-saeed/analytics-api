@@ -12,4 +12,4 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL,connect_args=CONNECT_ARGS)
 
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False,)
 
-base = declarative_base()
+Base = declarative_base()
