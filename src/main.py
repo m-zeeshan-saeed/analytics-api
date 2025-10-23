@@ -6,6 +6,7 @@ from blogs.database import engine, SessionLocal
 from blogs import models
 from blogs import schemas,models
 from sqlalchemy.orm import Session
+from passlib.context import CryptContext
 
 models.Base.metadata.create_all(bind=engine)
 
