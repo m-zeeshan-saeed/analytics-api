@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 from api.events import router as event_router
@@ -7,7 +7,7 @@ from blogs import models
 from blogs import schemas,models
 from sqlalchemy.orm import Session
 
-models.Base.metadata.create_all(engine)
+models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
@@ -48,14 +48,14 @@ async def create_blog(request: schemas.Blog, db: Session = Depends(get_db)):
 
 # Retrieve Data
 
-@app.get("/blog", status_code=status.HTTP_207_MULTI_STATUS)
+@app.get("/blog", status_code=status.HTTP_207_MULTI_STATUS,response_model=List[schemas.ShowBlog])
 async def all(db: Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
 
 
 
-@app.get("/blog/{id}", status_code=status.HTTP_200_OK)
+@app.get("/blog/{id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog)
 async def show(id, response: Response, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -92,3 +92,12 @@ async def update_blog(id, request: schemas.Blog, db: Session = Depends(get_db)):
     blog.update(request.dict(),synchronize_session=False)
     db.commit()
     return "Updated"
+
+
+@app.post("/users", status_code=status.HTTP_201_CREATED)
+async def create_users(request: schemas.User,db: Session =Depends(get_db)):
+    new_user = models.User(**request.dict())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
