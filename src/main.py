@@ -6,7 +6,7 @@ from blogs.database import engine, SessionLocal
 from blogs import models
 from blogs import schemas,models
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
+from blogs.hashing import Hash
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -95,9 +95,11 @@ async def update_blog(id, request: schemas.Blog, db: Session = Depends(get_db)):
     return "Updated"
 
 
+
 @app.post("/users", status_code=status.HTTP_201_CREATED)
 async def create_users(request: schemas.User,db: Session =Depends(get_db)):
-    new_user = models.User(**request.dict())
+    hashedPassword = await Hash.bcrypt(request.password)
+    new_user = models.User(**request.dict(exclude={"password"}),password=hashedPassword)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
