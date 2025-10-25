@@ -8,3 +8,5 @@ timescaledb
 requests
 pwdlib
 passlib
+pyjwt
+python-multipart

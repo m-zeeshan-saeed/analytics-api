@@ -16,20 +16,20 @@ class User(BaseModel):
     email: str
     password: str
 
-    model_config = {"from_attributes": True}
+
 
 
 class show_user(BaseModel):
     username: str
     email: str
-    blogs: List[Blog]
+    blogs: List[Blog] = []
 
     model_config = {"from_attributes": True}
 
 class ShowBlog(BaseModel):
     title: str
     body: str
-    creator: show_user
+    creator: Optional[show_user] = None
 
     model_config = {"from_attributes": True}
 
@@ -38,3 +38,12 @@ class Login(BaseModel):
     password: str
 
     model_config = {"from_attributes": True}
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    email: str | None = None
